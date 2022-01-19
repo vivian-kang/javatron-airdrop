@@ -22,9 +22,16 @@ public class ExportAccountServlet extends HttpServlet {
       if (expectTimestamp != "") {
         AccountExportAspect.EXPORT_TIME.set(Long.parseLong(expectTimestamp));
       }
+
+      String startBlockHeight = request.getParameter("start_block_height");
+      if (startBlockHeight!=null && startBlockHeight != "") {
+        AccountExportAspect.START_BLOCK_HEIGHT.set(Long.parseLong(startBlockHeight));
+      }
+
       response.getWriter().println("Set successfully!\n"
               + "Please wait a moment and will dump the file on block height: " + expectBlockNumber + "\n"
               + "or near the time stamp: " + expectTimestamp + "\n"
+              + "Start block height for scanning TRC20 token holder: " + startBlockHeight + "\n"
               + "Log in to this machine to get the exported account files\n"
               + "Path: " + System.getProperty("user.dir") + "/block_*_accounts.csv");
     } catch (Exception e) {

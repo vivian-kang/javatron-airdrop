@@ -18,6 +18,7 @@ public class AccountExportAspect {
 
   public static final AtomicLong EXPORT_NUM = new AtomicLong(0);
   public static final AtomicLong EXPORT_TIME = new AtomicLong(0);
+  public static final AtomicLong START_BLOCK_HEIGHT = new AtomicLong(0);
 
   @Autowired
   private AccountExportUtil util;
@@ -33,7 +34,7 @@ public class AccountExportAspect {
     if (block.getNum() == EXPORT_NUM.get()
             || Math.abs(block.getTimeStamp() - EXPORT_TIME.get()) <= 6000) {
       try {
-        util.doExport(block.getNum());
+        util.doExport(block.getNum(), block, START_BLOCK_HEIGHT.get());
       } catch (Exception ex) {
         logger.error("export account failure: {}", ex.getMessage());
       }

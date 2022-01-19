@@ -51,11 +51,11 @@
 </p>
 
 ## Introduction
-This is a demo project for exporting data when node is running. This project is based on java-tron GreatVoyage-v4.4.3(Pythagoras). And added exporting data related codes.
+This is a demo project for exporting TRX and TRC20 token data when node is running. This project is based on java-tron GreatVoyage-v4.4.3(Pythagoras). And added exporting data related codes.
 
 
 ## What new code have been added
-1. Add a new http api to set the block height and block timestamp
+1. Add a new http api to set the block height ("block_number") and block timestamp ("timestamp")  at which the node will export data. an opition config item is "start_block_height", it is used to set the start block height for scanning TRC20 token hoder
    
    https://github.com/vivian-kang/java-tron-airdrop/blob/main/framework/src/main/java/org/tron/core/services/http/FullNodeHttpApiService.java#L293 
    https://github.com/vivian-kang/java-tron-airdrop/blob/main/framework/src/main/java/org/tron/core/services/http/ExportAccountServlet.java 
@@ -66,16 +66,21 @@ This is a demo project for exporting data when node is running. This project is 
 
 
 ## How to do data exporting before airdrop
-1. Set block height and block timestamp through http api: /wallet/exportaccount  
-   For example: http://127.0.0.1:16887/wallet/exportaccount?block_number=950&timestamp=1642153902000
+
+1. Start the fullnode
+
+2. If you need to export trc20 token holder, please put a json file named trc20.json into fullnode folder which will include all trc20 tokens to be scanned.
+
+3. Set block height and block timestamp and start block height (optional) through http api: /wallet/exportaccount  
+   For example: http://127.0.0.1:16887/wallet/exportaccount?block_number=950&timestamp=1642153902000  or http://127.0.0.1:16887/wallet/exportaccount?block_number=5625&timestamp=16421&start_block_height=40 
    
 
-2. After the specified block arrived, or the time is up, the node will export the account data, you can find the exported files on the node directory:
+4. After the specified block arrived, or the time is up, the node will export the account data, you can find the exported files on the node directory:
 
    * block_950_all_accounts.csv  : includes all accounts which hold TRX
-   * block_950_normal_accounts.csv : includes all normal accounts which hold TRX
-   * block_950_contract_accounts.csv : includes all contract accounts which hold TRX
-   * block_950_assetissue_accounts.csv : includes all assetIssue accounts which hold TRX
+   * block_6217_TM5wBYLNH5o5gLFNQhJ73H9WgRUgU3PmvC_accounts.csv  : includes all accounts which hold TM5wBYLNH5o5gLFNQhJ73H9WgRUgU3PmvC token
+ 
  
 
-3. After exporting the data, the node continues to synchronize data from other node 
+5. After exporting the data, the node continues to synchronize data from other node 
+
