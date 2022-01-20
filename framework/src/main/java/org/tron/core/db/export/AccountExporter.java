@@ -78,6 +78,7 @@ public class AccountExporter {
         System.out.println(" >>> load from trc20.json,"+ trc20Address.size() + " trc20 addresses");
         for (String str: trc20Address) {
           System.out.println(" >>> trc20Address: " + str);
+          System.out.flush();
         }
       }
 
@@ -105,12 +106,17 @@ public class AccountExporter {
 
     AtomicLong total = new AtomicLong(0);
 
+    System.out.printf(" >>> start exporting trx snapshot\n");
+    System.out.flush();
     Map<String, Long> accounts = loopAccountStore(accountStore, null, total);
-    logger.info("export {} All accounts, total {} trx(SUN)", accounts.size(), total);
+    System.out.printf(" >>> export %d All accounts, total %d trx(SUN)\n", accounts.size(), total);
+    System.out.flush();
+
 
     String filename = "block_" + fingerprint + "_all_" + FILE_NAME;
     writeCSVFile(total, accounts, filename);
     System.out.println(" >>> finish exporting account data" );
+    System.out.flush();
   }
 
   private void exportNormal(AccountStore accountStore, long fingerprint) {
@@ -232,6 +238,8 @@ public class AccountExporter {
 
 
   private static void exportTrc20Holder(long headBlockNum, BlockCapsule blockCapsule, TransactionRetStore transactionRetStore, BlockIndexStore blockIndexStore) {
+    System.out.printf(" >>> start exporting trc20 snapshot\n");
+    System.out.flush();
     //避免trigger超时
     CommonParameter.getInstance().setDebug(true);
 
@@ -239,15 +247,18 @@ public class AccountExporter {
     Map<String, Set<String>> token20Map = new ConcurrentHashMap<>(1000);
     handlerMap(headBlockNum, token20Map, transactionRetStore,  blockIndexStore);
     System.out.println(" >>> token20Map key.size: " + token20Map.keySet().size());
+    System.out.flush();
 
     final long sum = token20Map.values().stream().mapToLong(Set::size).sum();
     long l2 = System.currentTimeMillis();
     System.out.println(" >>> token20Map values.size:" + sum + ", cost:" + (l2 - l1));
+    System.out.flush();
 
     l1 = System.currentTimeMillis();
     handlerMapToExcel(headBlockNum, token20Map, blockCapsule);
     l2 = System.currentTimeMillis();
     System.out.println(" >>> finish exporting trc20 holder data, cost:" + (l2 - l1));
+    System.out.flush();
   }
 
   private static void handlerMap(long headBlockNum, Map<String, Set<String>> token20Map, TransactionRetStore transactionRetStore, BlockIndexStore blockIndexStore) {
