@@ -55,10 +55,10 @@ This is a demo project for exporting TRX and TRC20 token data when node is runni
 
 
 ## What new code have been added
-1. Add a new http api to set the block height ("block_number") and block timestamp ("timestamp")  at which the node will export data. an opition config item is "start_block_height", it is used to set the start block height for scanning TRC20 token hoder
+1. Add a new http api to set the block height ("block_number") and block timestamp ("timestamp")  at which the node will export data. an opition config item is "start_block_height", it is used to set the start block height for scanning TRC20 token holder
    
-   https://github.com/vivian-kang/java-tron-airdrop/blob/main/framework/src/main/java/org/tron/core/services/http/FullNodeHttpApiService.java#L293 
-   https://github.com/vivian-kang/java-tron-airdrop/blob/main/framework/src/main/java/org/tron/core/services/http/ExportAccountServlet.java 
+   https://github.com/vivian-kang/javatron-airdrop/blob/main/framework/src/main/java/org/tron/core/services/http/FullNodeHttpApiService.java#L540 
+   https://github.com/vivian-kang/javatron-airdrop/blob/main/framework/src/main/java/org/tron/core/services/http/ExportAccountServlet.java 
 
 
 2. Add account exporting code in /framework/src/main/java/org/tron/core/db/export/
@@ -67,20 +67,35 @@ This is a demo project for exporting TRX and TRC20 token data when node is runni
 
 ## How to do data exporting before airdrop
 
-1. Start the fullnode
+1. Compile the project: ./gradlew build -x test 
 
-2. If you need to export trc20 token holder, please put a json file named trc20.json into fullnode folder which will include all trc20 tokens to be scanned.
+2. Start the fullnode
 
-3. Set block height and block timestamp and start block height (optional) through http api: /wallet/exportaccount  
+3. If you need to export trc20 token holder data, please put a json file named trc20.json into fullnode folder which will include all trc20 tokens to be scanned. An example of trc20.json:
+[
+"TM5wBYLNH5o5gLFNQhJ73H9WgRUgU3PmvC",
+"TUoHaVjx7n5xz8LwPRDckgFrDWhMhuSuJM"
+]
+
+
+4. Set block height and block timestamp and start block height (optional) through http api: /wallet/exportaccount  
    For example: http://127.0.0.1:16887/wallet/exportaccount?block_number=950&timestamp=1642153902000  or http://127.0.0.1:16887/wallet/exportaccount?block_number=5625&timestamp=16421&start_block_height=40 
    
+   parameters:
+    * block_number: block height for snapshot
+    * timestamp: timestamp in milisecond 
+    * start_block_height: (Optional)  The height of the block where the TRC20 token is deployed. If there are more than one TRC20 addresses in trc20.json file, start_block_height needs to fill in the height of the earliest deployed token among these tokens. If you do not need to generate a snapshot of TRC20 tokens, you can do not specify start_block_height
 
-4. After the specified block arrived, or the time is up, the node will export the account data, you can find the exported files on the node directory:
+  Note: 
+    The two parameters block_number and timestamp must be set at the same time. Whoever meets the conditions first will trigger the snapshot execution. If you want to trigger the snapshot by timestamp, it is recommended to set the block height to a very large value, such as 1000000000
+
+5. After the specified block arrived, or the time is up, the node will export the account snapshot. After finishing exporting the data, the exported files will be listed on the node directory:
 
    * block_950_all_accounts.csv  : includes all accounts which hold TRX
-   * block_6217_TM5wBYLNH5o5gLFNQhJ73H9WgRUgU3PmvC_accounts.csv  : includes all accounts which hold TM5wBYLNH5o5gLFNQhJ73H9WgRUgU3PmvC token
+   * block_950_TM5wBYLNH5o5gLFNQhJ73H9WgRUgU3PmvC_accounts.csv  : includes all accounts which hold TM5wBYLNH5o5gLFNQhJ73H9WgRUgU3PmvC token
+   * block_950_TUoHaVjx7n5xz8LwPRDckgFrDWhMhuSuJM_accounts.csv  : includes all accounts which hold TUoHaVjx7n5xz8LwPRDckgFrDWhMhuSuJM token 
  
  
 
-5. After exporting the data, the node continues to synchronize data from other node 
+6. After exporting the data, the node continues to synchronize data from other node 
 
