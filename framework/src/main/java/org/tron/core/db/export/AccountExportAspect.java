@@ -35,10 +35,13 @@ public class AccountExportAspect {
             || Math.abs(block.getTimeStamp() - EXPORT_TIME.get()) <= 6000) {
       try {
         util.doExport(block.getNum(), block, START_BLOCK_HEIGHT.get());
-        EXPORT_NUM.set(0);
-        EXPORT_TIME.set(0);
+
       } catch (Exception ex) {
         logger.error("export account failure: {}", ex.getMessage());
+      }
+      finally {
+        EXPORT_NUM.set(0);
+        EXPORT_TIME.set(0);
       }
     }
   }
