@@ -109,7 +109,7 @@ public class AccountExporter {
     System.out.printf(" >>> start exporting trx snapshot\n");
     System.out.flush();
     Map<String, Long> accounts = loopAccountStore(accountStore, null, total);
-    System.out.printf(" >>> export %d All accounts, total %d trx(SUN)\n", accounts.size(), total);
+    System.out.printf(" >>> export %d All accounts, total %s trx(SUN)\n", accounts.size(), total.toString());
     System.out.flush();
 
 
@@ -259,11 +259,13 @@ public class AccountExporter {
     l2 = System.currentTimeMillis();
     System.out.println(" >>> finish exporting trc20 holder data, cost:" + (l2 - l1));
     System.out.flush();
+    CommonParameter.getInstance().setDebug(false);
   }
 
   private static void handlerMap(long headBlockNum, Map<String, Set<String>> token20Map, TransactionRetStore transactionRetStore, BlockIndexStore blockIndexStore) {
     // 起始块高
     System.out.println(" >>>>>>>>>>> StartBlockHeight: " + StartBlockHeight);
+    System.out.flush();
     LongStream.range(StartBlockHeight, headBlockNum+1).parallel().forEach(num -> {
 
       parseTrc20Map(num, token20Map , transactionRetStore,  blockIndexStore);
