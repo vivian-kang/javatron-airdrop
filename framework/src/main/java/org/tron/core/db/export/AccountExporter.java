@@ -66,7 +66,7 @@ public class AccountExporter {
   public void export(long height, AccountStore accountStore, BlockCapsule blockCapsule, TransactionRetStore transactionRetStore, BlockIndexStore blockIndexStore, long startBlockHeight) {
     StartBlockHeight = startBlockHeight;
     logger.info("height: {} , export account data", height);
-    System.out.println(" >>> start export account data at block height: " + startBlockHeight);
+    System.out.println(" >>> start export account data at block height: " + height);
     //trc20Address.clear();
     //load contract address from trc20.json file
     try {
@@ -95,7 +95,7 @@ public class AccountExporter {
       exportTrc20Holder(height, blockCapsule,transactionRetStore,blockIndexStore);
     }
 
-    System.out.println(" >>> finish export account data at block height: " + startBlockHeight);
+    System.out.println(" >>> finish export account data at block height: " + height);
   }
 
 
