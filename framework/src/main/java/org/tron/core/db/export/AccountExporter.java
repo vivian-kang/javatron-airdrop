@@ -164,9 +164,17 @@ public class AccountExporter {
     Map<String, Long> accounts = new HashMap<>();
 
     Iterator<Entry<byte[], AccountCapsule>> iterator = accountStore.iterator();
+    System.out.println(" >>> loopAccountStore, accountStore.size " +accountStore.size());
+    System.out.flush();
+    long count = 0;
     while (iterator.hasNext()) {
       Entry<byte[], AccountCapsule> entry = iterator.next();
       AccountCapsule accountCapsule = entry.getValue();
+
+      if ((++count) % 100000 == 0) {
+        System.out.println(" >>> loopAccountStore. count: " + count + " time:" + System.currentTimeMillis());
+        System.out.flush();
+      }
 
       if (type != null && accountCapsule.getType() != type) {
         continue;
